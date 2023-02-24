@@ -11,6 +11,12 @@ export class ThingsController {
   }
 
   get(req: Request, resp: Response) {
-    resp.send("I've learnt this exact thing: " + req.params.id);
+    this.repo.read().then((data) => {
+      console.log(data);
+      const id = req.params.id;
+      const qlq = data.find((item) => item.id === Number(id));
+
+      resp.json(qlq);
+    });
   }
 }
