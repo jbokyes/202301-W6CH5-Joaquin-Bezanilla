@@ -23,7 +23,7 @@ export class ThingsController {
   post(req: Request, resp: Response) {
     console.log(req.body);
     this.repo.write(req.body).then((data) => console.log(data));
-    resp.send('<p> Post! </p>');
+    resp.send(`<p> Post!</p>`);
   }
 
   async patch(req: Request, resp: Response) {
