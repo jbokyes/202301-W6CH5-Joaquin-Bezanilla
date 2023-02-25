@@ -24,4 +24,14 @@ export class ThingsController {
     console.log(req.body);
     this.repo.write(req.body).then((data) => console.log(data));
   }
+
+  patch(req: Request, resp: Response) {
+    const {
+      body,
+      params: { id },
+    } = req;
+    if (!id) {
+      return;
+    }
+  }
 }

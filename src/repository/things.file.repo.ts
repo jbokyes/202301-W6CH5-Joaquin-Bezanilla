@@ -25,6 +25,20 @@ export class ThingsFileRepo {
     await fs.writeFile(file, finalData, { encoding: 'utf-8' });
     return 'Lets go! (write)';
   }
-  update() {}
-  delete() {}
+  async update(info: Things) {
+    const data = await fs.readFile(file, { encoding: 'utf-8' });
+    const parsedData: Things[] = JSON.parse(data);
+    const updatedData = JSON.stringify(
+      parsedData.map((item) => (item.id === info.id ? info : item))
+    );
+    await fs.writeFile(file, updatedData, 'utf-8');
+  }
+  async delete(id: Things['id']) {
+    const data = await fs.readFile(file, 'utf-8');
+    const parsedData: Things[] = JSON.parse(data);
+    const finalData = JSON.stringify(
+      parsedData.filter((item) => item.id !== id)
+    );
+    await fs.writeFile(file, finalData, 'utf-8');
+  }
 }
