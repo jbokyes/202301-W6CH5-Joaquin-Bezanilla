@@ -5,11 +5,16 @@ const file = './data/data.json';
 export type Things = {
   id: number;
   name: string;
+  howInteresting: number;
+  howImportant: number;
 };
 
 export interface ThingsRepoStructure {
   read(): Promise<Things[]>;
+  readId(id: Things['id']): Promise<Things>;
   write(info: Things): Promise<string | object>;
+  update(info: Things): Promise<void>;
+  delete(info: Things['id']): Promise<void>;
 }
 
 export class ThingsFileRepo {
