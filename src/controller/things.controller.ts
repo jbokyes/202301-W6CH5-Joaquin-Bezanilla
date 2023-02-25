@@ -28,7 +28,6 @@ export class ThingsController {
 
   async patch(req: Request, resp: Response) {
     const {
-      body,
       params: { id },
     } = req;
     if (!id) {
@@ -40,5 +39,10 @@ export class ThingsController {
     console.log(updatedThing);
     await this.repo.update(updatedThing);
     resp.send(`<p>Updateaste a ' + ${id}</p>`);
+  }
+
+  async delete(req: Request, resp: Response) {
+    await this.repo.delete(Number(req.params.id));
+    resp.send(`<p>Deleted item ${req.params.id}`);
   }
 }
