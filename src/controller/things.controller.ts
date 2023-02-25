@@ -38,7 +38,7 @@ export class ThingsController {
     const updatedThing = Object.assign(dataToUpdate, updateInfo);
     console.log(updatedThing);
     await this.repo.update(updatedThing);
-    resp.send(`<p>Updateaste a ' + ${id}</p>`);
+    resp.send(`<p>Just updated a ' + ${id}</p>`);
   }
 
   async delete(req: Request, resp: Response) {
