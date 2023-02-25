@@ -19,4 +19,9 @@ export class ThingsController {
       resp.json(qlq);
     });
   }
+
+  post(req: Request, _resp: Response) {
+    console.log(req.body);
+    this.repo.write(req.body).then((data) => console.log(data));
+  }
 }
