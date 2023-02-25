@@ -11,6 +11,7 @@ export interface ThingsRepoStructure {
   read(): Promise<Things[]>;
   write(info: Things): Promise<string | object>;
 }
+
 export class ThingsFileRepo {
   read() {
     return fs
