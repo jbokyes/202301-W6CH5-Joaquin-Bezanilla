@@ -4,7 +4,7 @@ import { ThingsFileRepo } from '../repository/things.file.repo.js';
 export class ThingsController {
   constructor(public repo: ThingsFileRepo) {}
 
-  getAll(req: Request, resp: Response) {
+  getAll(_req: Request, resp: Response) {
     this.repo.read().then((data) => {
       resp.json(data);
     });
@@ -14,9 +14,9 @@ export class ThingsController {
     this.repo.read().then((data) => {
       console.log(data);
       const id = req.params.id;
-      const qlq = data.find((item) => item.id === Number(id));
+      const specificData = data.find((item) => item.id === Number(id));
 
-      resp.json(qlq);
+      resp.json(specificData);
     });
   }
 
