@@ -18,6 +18,12 @@ export class ThingsFileRepo {
       .then((data) => JSON.parse(data) as Things[]);
   }
 
+  async readId(id: Things['id']) {
+    const data = await fs.readFile(file, 'utf-8');
+    const parsedData: Things[] = JSON.parse(data);
+    return parsedData.filter((thing) => thing.id === id)[0];
+  }
+
   async write(info: Things) {
     const data = await fs.readFile(file, { encoding: 'utf-8' });
     const parsedData: Things[] = JSON.parse(data);

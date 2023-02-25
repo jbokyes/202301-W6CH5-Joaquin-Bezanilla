@@ -1,5 +1,5 @@
 import { Response, Request } from 'express';
-import { ThingsFileRepo } from '../repository/things.file.repo.js';
+import { Things, ThingsFileRepo } from '../repository/things.file.repo.js';
 
 export class ThingsController {
   constructor(public repo: ThingsFileRepo) {}
@@ -20,12 +20,13 @@ export class ThingsController {
     });
   }
 
-  post(req: Request, _resp: Response) {
+  post(req: Request, resp: Response) {
     console.log(req.body);
     this.repo.write(req.body).then((data) => console.log(data));
+    resp.send('<p> Post! </p>');
   }
 
-  patch(req: Request, resp: Response) {
+  async patch(req: Request, resp: Response) {
     const {
       body,
       params: { id },
@@ -33,5 +34,11 @@ export class ThingsController {
     if (!id) {
       return;
     }
+    const updateInfo = req.body as Partial<Things>;
+    const dataToUpdate = await this.repo.readId(Number(req.params.id));
+    const updatedThing = Object.assign(dataToUpdate, updateInfo);
+    console.log(updatedThing);
+    await this.repo.update(updatedThing);
+    resp.send(`<p>Updateaste a ' + ${id}</p>`);
   }
 }
