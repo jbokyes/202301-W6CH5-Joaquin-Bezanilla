@@ -27,18 +27,16 @@ export class ThingsController {
   }
 
   async patch(req: Request, resp: Response) {
-    const {
-      params: { id },
-    } = req;
+    const id = Number(req.params.id);
     if (!id) {
       return;
     }
-    const updateInfo = req.body as Partial<Things>;
-    const dataToUpdate = await this.repo.readId(Number(req.params.id));
-    const updatedThing = Object.assign(dataToUpdate, updateInfo);
-    console.log(updatedThing);
-    await this.repo.update(updatedThing);
-    resp.send(`<p>Just updated a ' + ${id}</p>`);
+    const prevThing: any = await this.repo.readId(id);
+    console.log(prevThing);
+    const newThing = req.body;
+    const updateThing = Object.assign(prevThing, newThing);
+    await this.repo.update(updateThing);
+    resp.send('Updated');
   }
 
   async delete(req: Request, resp: Response) {
