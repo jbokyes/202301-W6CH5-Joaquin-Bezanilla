@@ -43,6 +43,7 @@ export class ThingsFileRepo {
     const updatedData = JSON.stringify(
       parsedData.map((item) => (item.id === info.id ? info : item))
     );
+
     await fs.writeFile(file, updatedData, 'utf-8');
   }
   async delete(id: Things['id']) {
