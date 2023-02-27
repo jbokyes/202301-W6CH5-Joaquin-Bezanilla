@@ -1,46 +1,63 @@
-import { Response, Request } from 'express';
-import { Things, ThingsFileRepo } from '../repository/things.file.repo.js';
+import { Response, Request, NextFunction } from 'express';
+import { Thing } from '../repository/things.file.repo.js';
+import { Repo } from '../repository/things.repo.interface.js';
 
 export class ThingsController {
-  constructor(public repo: ThingsFileRepo) {}
+  constructor(public repo: Repo<Thing>) {}
 
-  getAll(_req: Request, resp: Response) {
-    this.repo.read().then((data) => {
-      resp.json(data);
-    });
-  }
-
-  get(req: Request, resp: Response) {
-    this.repo.read().then((data) => {
-      console.log(data);
-      const id = req.params.id;
-      const specificData = data.find((item) => item.id === Number(id));
-
-      resp.json(specificData);
-    });
-  }
-
-  post(req: Request, resp: Response) {
-    console.log(req.body);
-    this.repo.write(req.body).then((data) => console.log(data));
-    resp.send(`<p> Post!</p>`);
-  }
-
-  async patch(req: Request, resp: Response) {
-    const id = Number(req.params.id);
-    if (!id) {
-      return;
+  async getAll(_req: Request, resp: Response, next: NextFunction) {
+    try {
+      const data = await this.repo.read();
+      resp.json({
+        results: data,
+      });
+    } catch (error) {
+      next(error);
     }
-    const prevThing: any = await this.repo.readId(id);
-    console.log(prevThing);
-    const newThing = req.body;
-    const updateThing = Object.assign(prevThing, newThing);
-    await this.repo.update(updateThing);
-    resp.send('Updated');
   }
 
-  async delete(req: Request, resp: Response) {
-    await this.repo.delete(Number(req.params.id));
-    resp.send(`<p>Deleted item ${req.params.id}`);
+  async get(req: Request, resp: Response, next: NextFunction) {
+    try {
+      const data = await this.repo.readId(req.params.id);
+      resp.json({
+        results: [data],
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async post(req: Request, resp: Response, next: NextFunction) {
+    try {
+      const data = await this.repo.write(req.body);
+      resp.json({
+        results: [data],
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async patch(req: Request, resp: Response, next: NextFunction) {
+    try {
+      req.body.id = req.params.id ? req.params.id : req.body.id;
+      const data = await this.repo.update(req.body);
+      resp.json({
+        results: [data],
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async delete(req: Request, resp: Response, next: NextFunction) {
+    try {
+      this.repo.delete(req.params.id);
+      resp.json({
+        results: [],
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 }

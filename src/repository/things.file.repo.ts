@@ -1,57 +1,54 @@
 import fs from 'fs/promises';
-
+import { Repo } from './things.repo.interface';
+import { Thing } from '../entities/thing';
 const file = './data/data.json';
 
-export type Things = {
-  id: number;
-  name: string;
-  howInteresting: number;
-  howImportant: number;
-};
-
-export interface ThingsRepoStructure {
-  read(): Promise<Things[]>;
-  readId(id: Things['id']): Promise<Things>;
-  write(info: Things): Promise<string | object>;
-  update(info: Things): Promise<void>;
-  delete(info: Things['id']): Promise<void>;
-}
-
-export class ThingsFileRepo {
-  read() {
-    return fs
-      .readFile(file, { encoding: 'utf-8' })
-      .then((data) => JSON.parse(data) as Things[]);
+export class ThingsFileRepo implements Repo<Thing> {
+  async read(): Promise<Thing[]> {
+    const initialData: string = await fs.readFile(file, { encoding: 'utf-8' });
+    return JSON.parse(initialData);
   }
 
-  async readId(id: Things['id']) {
-    const data = await fs.readFile(file, 'utf-8');
-    const parsedData: Things[] = JSON.parse(data);
-    return parsedData.filter((thing) => thing.id === id)[0];
+  async readId(id: string): Promise<Thing> {
+    const initialData: string = await fs.readFile(file, { encoding: 'utf-8' });
+    const data: Thing[] = JSON.parse(initialData);
+    const finalData = data.find((item) => item.id === id);
+    if (!finalData) throw new Error('Id not found');
+    return finalData;
   }
 
-  async write(info: Things) {
-    const data = await fs.readFile(file, { encoding: 'utf-8' });
-    const parsedData: Things[] = JSON.parse(data);
-    const finalData = JSON.stringify([...parsedData, info]);
-    await fs.writeFile(file, finalData, { encoding: 'utf-8' });
-    return 'Lets go! (write)';
+  async write(info: Thing) {
+    const initialData: string = await fs.readFile(file, { encoding: 'utf-8' });
+    const data: Thing[] = JSON.parse(initialData);
+    const finalData = [...data, info];
+    await fs.writeFile(file, JSON.stringify(finalData), 'utf-8');
+    return info as Thing;
   }
-  async update(info: Things) {
-    const data = await fs.readFile(file, { encoding: 'utf-8' });
-    const parsedData: Things[] = JSON.parse(data);
-    const updatedData = JSON.stringify(
-      parsedData.map((item) => (item.id === info.id ? info : item))
-    );
-
-    await fs.writeFile(file, updatedData, 'utf-8');
+  async update(info: Partial<Thing>) {
+    if (!info.id) throw new Error('Not valid data');
+    const initialData: string = await fs.readFile(file, { encoding: 'utf-8' });
+    const data: Thing[] = JSON.parse(initialData);
+    let updatedItem: Thing = {} as Thing;
+    const finalData = data.map((item) => {
+      if (item.id === info.id) {
+        updatedItem = { ...item, ...info };
+        return updatedItem;
+      }
+      return item;
+    });
+    if (!updatedItem.id) throw new Error('Id not found');
+    await fs.writeFile(file, JSON.stringify(finalData), 'utf-8');
+    return updatedItem as Thing;
   }
-  async delete(id: Things['id']) {
-    const data = await fs.readFile(file, 'utf-8');
-    const parsedData: Things[] = JSON.parse(data);
-    const finalData = JSON.stringify(
-      parsedData.filter((item) => item.id !== id)
-    );
-    await fs.writeFile(file, finalData, 'utf-8');
+  async delete(id: string) {
+    const initialData: string = await fs.readFile(file, {
+      encoding: 'utf-8',
+    });
+    const data: Thing[] = JSON.parse(initialData);
+    const index = data.findIndex((item) => item.id === id);
+    if (index < 0) throw new Error('Id not found');
+    data.slice(index, 1);
+    await fs.writeFile(file, JSON.stringify(data), 'utf-8');
   }
 }
+export { Thing };
