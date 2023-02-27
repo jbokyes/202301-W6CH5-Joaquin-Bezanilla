@@ -3,14 +3,13 @@ import { Repo } from './things.repo.interface';
 import { Thing } from '../entities/thing';
 const file = './data/data.json';
 
-export class ThingsFileRepo {
-  read() {
-    return fs
-      .readFile(file, { encoding: 'utf-8' })
-      .then((data) => JSON.parse(data) as Thing[]);
+export class ThingsFileRepo implements Repo<Thing> {
+  async read(): Promise<Thing[]> {
+    const initialData: string = await fs.readFile(file, { encoding: 'utf-8' });
+    return JSON.parse(initialData);
   }
 
-  async readId(id: Partial<Thing>) {
+  async readId(id: string): Promise<Thing> {
     const initialData: string = await fs.readFile(file, { encoding: 'utf-8' });
     const data: Thing[] = JSON.parse(initialData);
     const finalData = data.find((item) => item.id === id);
@@ -25,7 +24,7 @@ export class ThingsFileRepo {
     await fs.writeFile(file, JSON.stringify(finalData), 'utf-8');
     return info as Thing;
   }
-  async update(info: Thing) {
+  async update(info: Partial<Thing>) {
     if (!info.id) throw new Error('Not valid data');
     const initialData: string = await fs.readFile(file, { encoding: 'utf-8' });
     const data: Thing[] = JSON.parse(initialData);
