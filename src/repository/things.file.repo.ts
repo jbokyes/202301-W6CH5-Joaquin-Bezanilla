@@ -52,3 +52,4 @@ export class ThingsFileRepo {
     await fs.writeFile(file, JSON.stringify(data), 'utf-8');
   }
 }
+export { Thing };
