@@ -1,4 +1,5 @@
-import { Thing, ThingsFileRepo } from './things.file.repo';
+import { ThingsFileRepo } from './things.file.repo';
+import { Thing } from '../entities/thing';
 import fs from 'fs/promises';
 jest.mock('fs/promises');
 
@@ -11,7 +12,7 @@ describe('Given ThingsFileRepo', () => {
   describe('When i use read', () => {
     test('Then it should return the data', async () => {
       (fs.readFile as jest.Mock).mockResolvedValue('[]');
-      const result = await repo.read();
+      const result = await repo.query();
       expect(fs.readFile).toHaveBeenCalled();
       expect(result).toEqual([]);
     });
@@ -21,14 +22,14 @@ describe('Given ThingsFileRepo', () => {
     test('Then it should return an object if it has a valid id', async () => {
       (fs.readFile as jest.Mock).mockResolvedValue('[{"id": "1"}]');
       const id = '1';
-      const result = await repo.readId(id);
+      const result = await repo.queryId(id);
       expect(fs.readFile).toHaveBeenCalled();
       expect(result).toEqual({ id: '1' });
     });
     test('Then it should throw an error if it doesnt have a valid ID', () => {
       (fs.readFile as jest.Mock).mockResolvedValue('[{"id":"2"}]');
       const id = '1';
-      expect(async () => repo.readId(id)).rejects.toThrow();
+      expect(async () => repo.queryId(id)).rejects.toThrow();
       expect(fs.readFile).toHaveBeenCalled();
     });
     test('Then it should throw an error', async () => {
@@ -64,7 +65,7 @@ describe('Given ThingsFileRepo', () => {
     test('Then it should get rid of the object with matching ids', async () => {
       (fs.readFile as jest.Mock).mockResolvedValue('[{"id":"1"}]');
       const info = '1';
-      const result = await repo.delete(info);
+      const result = await repo.destroy(info);
       expect(fs.readFile).toHaveBeenCalled();
       expect(result).toEqual(undefined);
     });
@@ -72,7 +73,7 @@ describe('Given ThingsFileRepo', () => {
       (fs.readFile as jest.Mock).mockResolvedValue('[{"id":"2"}]');
       const info = '1';
       expect(fs.readFile).toHaveBeenCalled();
-      expect(async () => repo.delete(info)).rejects.toThrow();
+      expect(async () => repo.destroy(info)).rejects.toThrow();
     });
   });
   describe('When i use write', () => {
@@ -84,7 +85,7 @@ describe('Given ThingsFileRepo', () => {
         interestingScore: 1,
         importantScore: 1,
       };
-      const result = await repo.write(info);
+      const result = await repo.create(info);
       expect(fs.readFile).toHaveBeenCalled();
       expect(result).toEqual(info);
     });

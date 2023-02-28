@@ -1,15 +1,16 @@
 import fs from 'fs/promises';
-import { Repo } from './things.repo.interface';
 import { Thing } from '../entities/thing';
+import { Repo } from './repo.interface';
+
 const file = './data/data.json';
 
 export class ThingsFileRepo implements Repo<Thing> {
-  async read(): Promise<Thing[]> {
+  async query(): Promise<Thing[]> {
     const initialData: string = await fs.readFile(file, { encoding: 'utf-8' });
     return JSON.parse(initialData);
   }
 
-  async readId(id: string): Promise<Thing> {
+  async queryId(id: string): Promise<Thing> {
     const initialData: string = await fs.readFile(file, { encoding: 'utf-8' });
     const data: Thing[] = JSON.parse(initialData);
     const finalData = data.find((item) => item.id === id);
@@ -17,14 +18,17 @@ export class ThingsFileRepo implements Repo<Thing> {
     return finalData;
   }
 
-  async write(info: Thing) {
+  async create(info: Partial<Thing>): Promise<Thing> {
+    // Future if (!validateInfo(info)) throw new Error('Not valid data');
     const initialData: string = await fs.readFile(file, { encoding: 'utf-8' });
     const data: Thing[] = JSON.parse(initialData);
+    info.id = String(Math.floor(Math.random() * 1000_000));
     const finalData = [...data, info];
     await fs.writeFile(file, JSON.stringify(finalData), 'utf-8');
     return info as Thing;
   }
-  async update(info: Partial<Thing>) {
+
+  async update(info: Partial<Thing>): Promise<Thing> {
     if (!info.id) throw new Error('Not valid data');
     const initialData: string = await fs.readFile(file, { encoding: 'utf-8' });
     const data: Thing[] = JSON.parse(initialData);
@@ -34,13 +38,16 @@ export class ThingsFileRepo implements Repo<Thing> {
         updatedItem = { ...item, ...info };
         return updatedItem;
       }
+
       return item;
     });
+
     if (!updatedItem.id) throw new Error('Id not found');
     await fs.writeFile(file, JSON.stringify(finalData), 'utf-8');
     return updatedItem as Thing;
   }
-  async delete(id: string) {
+
+  async destroy(id: string): Promise<void> {
     const initialData: string = await fs.readFile(file, {
       encoding: 'utf-8',
     });
@@ -51,4 +58,3 @@ export class ThingsFileRepo implements Repo<Thing> {
     await fs.writeFile(file, JSON.stringify(data), 'utf-8');
   }
 }
-export { Thing };
