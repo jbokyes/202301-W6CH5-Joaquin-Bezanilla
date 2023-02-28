@@ -1,6 +1,6 @@
 import { Thing } from '../entities/thing.js';
 import { HTTPError } from '../errors/errors.js';
-import { Repo } from './repo.interface.js';
+import { Repo } from './repo.interface';
 import { ThingModel } from './things.mongo.model.js';
 import createDebug from 'debug';
 const debug = createDebug('W6:repo');

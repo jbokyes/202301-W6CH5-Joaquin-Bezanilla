@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
-import { Thing } from '../entities/thing';
-import { Repo } from './repo.interface';
+import { Thing } from '../entities/thing.js';
+import { Repo } from './repo.interface.js';
 
 const file = './data/data.json';
 

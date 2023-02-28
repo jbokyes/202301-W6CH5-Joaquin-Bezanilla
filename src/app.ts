@@ -16,11 +16,6 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cors(corsOptions));
 
-app.use((_req, _resp, next) => {
-  debug('Soy un middleware');
-  next();
-});
-
 // Modo más organizado de hacerlo
 // Ejemplo para una ruta
 

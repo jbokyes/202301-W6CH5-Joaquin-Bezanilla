@@ -1,5 +1,5 @@
 import { model, Schema, SchemaTypes } from 'mongoose';
-import { Thing } from '../entities/thing';
+import { Thing } from '../entities/thing.js';
 
 const thingSchema = new Schema<Thing>({
   name: {
@@ -8,13 +8,13 @@ const thingSchema = new Schema<Thing>({
     unique: true,
   },
   interestingScore: {
-    type: Number,
+    type: SchemaTypes.Number,
     required: true,
     min: 0,
     max: 10,
   },
   importantScore: {
-    type: Number,
+    type: SchemaTypes.Number,
     required: true,
     min: 0,
     max: 10,
