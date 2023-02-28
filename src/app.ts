@@ -24,22 +24,6 @@ app.use('/things', thingsRouter);
 // Modo más simple de hacerlo
 // Ejemplo para la ruta home
 
-app.get('/', (_req, resp) => {
-  resp.json({
-    info: "Bootcamp API's",
-    things: '/things',
-  });
-});
-app.get('/:id', (req, resp) => {
-  resp.send('Hola ' + req.params.id);
-});
-app.post('/', (req, resp) => {
-  req.body.id = 12;
-  resp.send(req.body);
-});
-app.patch('/:id');
-app.delete('/:id');
-
 app.use(
   (error: CustomError, _req: Request, resp: Response, _next: NextFunction) => {
     debug('Soy el middleware de errores');
