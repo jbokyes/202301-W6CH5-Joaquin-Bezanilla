@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { ThingsController } from '../controller/things.controller.js';
+import { ThingsController } from '../controllers/things.controller.js';
 import { ThingsFileRepo } from '../repository/things.file.repo.js';
 
 export const thingsRouter = Router();
