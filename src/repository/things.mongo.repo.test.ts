@@ -1,5 +1,5 @@
 import { ThingsMongoRepo } from './things.mongo.repo';
-import { ThingModel } from './things.mongo.model.js';
+import { ThingModel } from './things.mongo.model';
 
 jest.mock('./things.mongo.model');
 
