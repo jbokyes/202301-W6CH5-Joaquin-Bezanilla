@@ -1,9 +1,10 @@
-/** @type {import('ts-jest').JestConfigWithTsJest} */
+/** @type {import("ts-jest").JestConfigWithTsJest} */
+
 export default {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testPathIgnorePatterns: ['dist'],
+  testPathIgnore: ['dist'],
   resolver: 'jest-ts-webcompat-resolver',
   collectCoverageFrom: ['src/**/*.ts'],
-  coveragePathIgnorePatterns: ['index.ts', 'app.ts', 'routers'],
+  coveragePathIgnorePatterns: ['index.ts', 'app.ts', 'router'],
 };
