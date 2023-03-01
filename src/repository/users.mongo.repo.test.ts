@@ -41,17 +41,14 @@ describe('Given UserMongoRepo', () => {
       expect(result).toEqual([query]);
     });
   });
-
-  /* describe('When i use ReadId and cant fetch data', () => {
-    test('Then  it should return HTTPError', async () => {
+  describe('When i use ReadId and cant fetch data', () => {
+    test('Then  it should return HTTPError', () => {
       (UserModel.findById as jest.Mock).mockResolvedValue(undefined);
-      const id = '2';
-      const result = await repo.queryId(id);
+      const id = '1';
       expect(UserModel.findById).toHaveBeenCalled();
-      expect(async () => result).rejects.toThrow();
+      expect(async () => repo.queryId(id)).rejects.toThrow();
     });
-  }); */
-
+  });
   describe('When i use create', () => {
     test('Then it should return an object if we give a valid id', async () => {
       (UserModel.create as jest.Mock).mockResolvedValue([]);
@@ -64,7 +61,6 @@ describe('Given UserMongoRepo', () => {
       expect(result).toStrictEqual([]);
     });
   });
-
   describe('When i use update', () => {
     test('Then it should return the updated object if it has the same id', async () => {
       (UserModel.findByIdAndUpdate as jest.Mock).mockResolvedValue({
@@ -81,15 +77,32 @@ describe('Given UserMongoRepo', () => {
         email: 'test',
       });
     });
-
     test('When given a incorrect data it should thrown an erro', async () => {
-      (UserModel.findByIdAndDelete as jest.Mock).mockResolvedValue(
-        '[{"id": "1"}]'
-      );
-      const id = '1';
-      const result = await repo.destroy(id);
-      expect(UserModel.findByIdAndDelete).toHaveBeenCalled();
-      expect(result).toBeUndefined();
+      (UserModel.findByIdAndUpdate as jest.Mock).mockResolvedValue(undefined);
+      const user = { email: '' };
+      expect(UserModel.findByIdAndUpdate).toHaveBeenCalled();
+      expect(async () => repo.update(user)).rejects.toThrow();
     });
+  });
+});
+const repo = new UsersMongoRepo();
+describe('When you use delete()', () => {
+  test('Then it should return the data', async () => {
+    (UserModel.findByIdAndDelete as jest.Mock).mockResolvedValue(
+      '[{"id": "1", "test": "3"}]'
+    );
+    // Act
+    const result = await repo.destroy('1');
+    // Assert
+    expect(result).toBeUndefined();
+  });
+  test('Then should throw an error', () => {
+    // Arrange
+    (UserModel.findByIdAndDelete as jest.Mock).mockResolvedValue(undefined);
+    // Act
+
+    // Assert
+    expect(async () => repo.destroy('1')).rejects.toThrow();
+    expect(UserModel.findByIdAndDelete).toHaveBeenCalled();
   });
 });
