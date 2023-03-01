@@ -31,18 +31,18 @@ export class UsersMongoRepo implements Repo<User> {
   }
 
   async create(info: Partial<User>): Promise<User> {
-    debug('create: ' + info.id);
+    debug('create: ' + info.email);
     const data = await UserModel.create(info);
     return data;
   }
 
   async update(info: Partial<User>): Promise<User> {
-    debug('update: ' + info.id);
+    debug('update: ' + info.email);
     const data = await UserModel.findByIdAndUpdate(info.id, info, {
       new: true,
     });
     if (!data)
-      throw new HTTPError(404, 'Id not found', 'Id not found in update');
+      throw new HTTPError(404, 'Email not found', 'Email not found in update');
     return data;
   }
 
