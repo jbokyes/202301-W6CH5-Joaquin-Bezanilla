@@ -21,4 +21,12 @@ const thingSchema = new Schema<Thing>({
   },
 });
 
+thingSchema.set('toJSON', {
+  transform(_document, returnedObject) {
+    returnedObject.id = returnedObject._id;
+    delete returnedObject.__v;
+    delete returnedObject._id;
+  },
+});
+
 export const ThingModel = model('Thing', thingSchema, 'things');

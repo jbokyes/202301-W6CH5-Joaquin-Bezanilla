@@ -2,7 +2,7 @@ import { Response, Request, NextFunction } from 'express';
 import { Repo } from '../repository/repo.interface.js';
 import { Thing } from '../entities/thing.js';
 import createDebug from 'debug';
-const debug = createDebug('W6:controller');
+const debug = createDebug('W6:controller-things');
 
 export class ThingsController {
   // eslint-disable-next-line no-unused-vars

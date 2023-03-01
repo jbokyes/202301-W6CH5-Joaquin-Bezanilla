@@ -4,6 +4,7 @@ import cors from 'cors';
 import { thingsRouter } from './router/things.router.js';
 import createDebug from 'debug';
 import { CustomError, HTTPError } from './errors/errors.js';
+import { usersRouter } from './router/users.router.js';
 
 const debug = createDebug('W6:app');
 export const app = express();
@@ -20,10 +21,16 @@ app.use(cors(corsOptions));
 // Ejemplo para una ruta
 
 app.use('/things', thingsRouter);
-
-// Modo más simple de hacerlo
-// Ejemplo para la ruta home
-
+app.use('/users', usersRouter);
+app.get('/', (_req, resp) => {
+  resp.json({
+    info: "Bootcamp API's",
+    endpoints: {
+      things: '/things',
+      users: '/users',
+    },
+  });
+});
 app.use(
   (error: CustomError, _req: Request, resp: Response, _next: NextFunction) => {
     debug('Soy el middleware de errores');

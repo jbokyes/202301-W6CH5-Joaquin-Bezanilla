@@ -9,6 +9,9 @@ export class ThingsMongoRepo implements Repo<Thing> {
   constructor() {
     debug('Insantiate');
   }
+  search(query: { key: string; value: unknown }): Promise<Thing[]> {
+    throw new Error('Method not implemented.');
+  }
 
   async query(): Promise<Thing[]> {
     debug('query');
