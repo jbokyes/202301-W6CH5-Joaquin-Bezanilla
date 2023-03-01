@@ -5,6 +5,9 @@ import { Repo } from './repo.interface.js';
 const file = './data/data.json';
 
 export class ThingsFileRepo implements Repo<Thing> {
+  search(_query: { key: string; value: unknown }): Promise<Thing[]> {
+    throw new Error('Method not implemented.');
+  }
   async query(): Promise<Thing[]> {
     const initialData: string = await fs.readFile(file, { encoding: 'utf-8' });
     return JSON.parse(initialData);

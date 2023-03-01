@@ -1,41 +1,44 @@
-import { Thing } from '../entities/thing.js';
+import { User } from '../entities/user.js';
 import { HTTPError } from '../errors/errors.js';
 import { Repo } from './repo.interface';
-import { ThingModel } from './things.mongo.model.js';
 import createDebug from 'debug';
+import { UserModel } from './user.mongo.model.js';
 const debug = createDebug('W6:repo');
 
-export class ThingsMongoRepo implements Repo<Thing> {
+export class UsersMongoRepo implements Repo<User> {
   constructor() {
     debug('Insantiate');
   }
-  search(query: { key: string; value: unknown }): Promise<Thing[]> {
-    throw new Error('Method not implemented.');
-  }
 
-  async query(): Promise<Thing[]> {
+  async query(): Promise<User[]> {
     debug('query');
-    const data = await ThingModel.find();
+    const data = await UserModel.find();
     return data;
   }
 
-  async queryId(id: string): Promise<Thing> {
+  async queryId(id: string): Promise<User> {
     debug('queryId: ' + id);
-    const data = await ThingModel.findById(id);
+    const data = await UserModel.findById(id);
     if (!data)
       throw new HTTPError(404, 'Id not found', 'Id not found in queryId');
     return data;
   }
 
-  async create(info: Partial<Thing>): Promise<Thing> {
-    debug('create: ' + info.id);
-    const data = await ThingModel.create(info);
+  async search(query: { key: string; value: unknown }) {
+    debug('search');
+    const data = UserModel.find({ [query.key]: query.value });
     return data;
   }
 
-  async update(info: Partial<Thing>): Promise<Thing> {
+  async create(info: Partial<User>): Promise<User> {
+    debug('create: ' + info.id);
+    const data = await UserModel.create(info);
+    return data;
+  }
+
+  async update(info: Partial<User>): Promise<User> {
     debug('update: ' + info.id);
-    const data = await ThingModel.findByIdAndUpdate(info.id, info, {
+    const data = await UserModel.findByIdAndUpdate(info.id, info, {
       new: true,
     });
     if (!data)
@@ -45,7 +48,7 @@ export class ThingsMongoRepo implements Repo<Thing> {
 
   async destroy(id: string): Promise<void> {
     debug('delete: ' + id);
-    const data = await ThingModel.findByIdAndDelete(id);
+    const data = await UserModel.findByIdAndDelete(id);
     if (!data)
       throw new HTTPError(
         404,
