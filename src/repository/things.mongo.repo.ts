@@ -15,7 +15,7 @@ export class ThingsMongoRepo implements Repo<Thing> {
 
   async query(): Promise<Thing[]> {
     debug('query');
-    const data = await ThingModel.find();
+    const data = await ThingModel.find().populate('owner', { things: 0 });
     return data;
   }
 

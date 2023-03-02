@@ -9,7 +9,13 @@ const userSchema = new Schema<User>({
   passwd: {
     type: String,
     required: true,
-  },
+  }, // OPCIONAL
+  things: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Thing',
+    },
+  ],
 });
 
 userSchema.set('toJSON', {
@@ -17,6 +23,7 @@ userSchema.set('toJSON', {
     returnedObject.id = returnedObject._id;
     delete returnedObject.__v;
     delete returnedObject._id;
+    delete returnedObject.passwd;
   },
 });
 

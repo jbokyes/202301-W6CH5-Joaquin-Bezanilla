@@ -1,9 +1,10 @@
 import { Response, Request, NextFunction } from 'express';
 import { UsersMongoRepo } from '../repository/users.mongo.repo';
 import { UsersController } from './users.controller';
-
+import { Auth, PayloadToken } from '../helpers/auth.js';
 describe('Given UsersController', () => {
   const repo: UsersMongoRepo = {
+    // Aquí pude haber usado el "as" para no tener que incluir funciones que no utilizo
     create: jest.fn(),
     query: jest.fn(),
     queryId: jest.fn(),
@@ -35,13 +36,15 @@ describe('Given UsersController', () => {
       expect(next).toHaveBeenCalled();
     });
   });
-  describe('login', () => {
-    test('Then it should create a token in results', async () => {
+  Auth.compare = jest.fn().mockResolvedValue(true); // aquí le hacemos el mock porque necesitamos instanciar primero.
+  describe('When all filters in login are ok', () => {
+    (repo.search as jest.Mock).mockResolvedValue(['test']);
+    test('Then json should be called', async () => {
       await controller.login(req, resp, next);
       expect(repo.search).toHaveBeenCalled();
       expect(resp.json).toHaveBeenCalled();
     });
-    test('Then it should do something else if there is any errors', async () => {
+    test('Then it should call next if there is any errors', async () => {
       (repo.search as jest.Mock).mockRejectedValue(new Error());
       await controller.login(req, resp, next);
       expect(repo.search).toHaveBeenCalled();

@@ -1,6 +1,7 @@
 import { Response, Request, NextFunction } from 'express';
 
 import { ThingsFileRepo } from '../repository/things.file.repo';
+import { UsersMongoRepo } from '../repository/users.mongo.repo';
 import { ThingsController } from './things.controller';
 
 describe('Given ThingsController', () => {
@@ -13,6 +14,8 @@ describe('Given ThingsController', () => {
     search: jest.fn(),
   };
 
+  const userRepo = {} as UsersMongoRepo;
+
   const req = {
     body: {},
     params: { id: '' },
@@ -22,7 +25,7 @@ describe('Given ThingsController', () => {
   } as unknown as Response;
   const next = jest.fn() as NextFunction;
 
-  const controller = new ThingsController(repo);
+  const controller = new ThingsController(repo, userRepo);
 
   describe('getAll', () => {
     test('Then it should give us an array of objects assuming no errores', async () => {
