@@ -3,7 +3,7 @@ import { ThingModel } from './things.mongo.model';
 
 jest.mock('./things.mongo.model');
 
-describe('Given BearMongoRepo', () => {
+describe('Given ThingsMongoRepo', () => {
   const repo = new ThingsMongoRepo();
   describe('When is called', () => {
     test('Then should be instanced', () => {
