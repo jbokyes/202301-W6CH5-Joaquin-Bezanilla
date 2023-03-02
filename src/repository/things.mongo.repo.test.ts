@@ -3,14 +3,13 @@ import { ThingModel } from './things.mongo.model';
 
 jest.mock('./things.mongo.model');
 
-describe('Given BearMongoRepo', () => {
+describe('Given ThingsMongoRepo', () => {
   const repo = new ThingsMongoRepo();
   describe('When is called', () => {
     test('Then should be instanced', () => {
       expect(repo).toBeInstanceOf(ThingsMongoRepo);
     });
   });
-
   describe('When i use readAll', () => {
     test('Then should return the data', async () => {
       (ThingModel.find as jest.Mock).mockResolvedValue([]);
@@ -29,6 +28,19 @@ describe('Given BearMongoRepo', () => {
       const result = await repo.queryId(id);
       expect(ThingModel.findById).toHaveBeenCalled();
       expect(result).toEqual({ id: '1' });
+    });
+    describe('When i use query', () => {
+      test('Then should return the datas', async () => {
+        const mockData = [{ things: 'test' }];
+        (ThingModel.find as jest.Mock).mockImplementation(() => ({
+          populate: jest.fn().mockReturnValue(mockData),
+        }));
+
+        const result = await repo.query();
+
+        expect(ThingModel.find).toHaveBeenCalled();
+        expect(result).toEqual(mockData);
+      });
     });
   });
 

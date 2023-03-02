@@ -9,7 +9,7 @@ const debug = createDebug('W6:controller-users');
 export class UsersController {
   // eslint-disable-next-line no-unused-vars
   constructor(public repo: Repo<User>) {
-    debug('Insantiate');
+    debug('Instantiate');
   }
 
   async register(req: Request, resp: Response, next: NextFunction) {
@@ -18,6 +18,7 @@ export class UsersController {
       if (!req.body.email || !req.body.passwd)
         throw new HTTPError(403, 'Unauthorized', 'Invalid email or password');
       req.body.passwd = await Auth.hash(req.body.passwd);
+      req.body.things = [];
       const data = await this.repo.create(req.body);
       console.log(data);
       resp.json({
@@ -41,6 +42,7 @@ export class UsersController {
       if (!(await Auth.compare(req.body.passwd, data[0].passwd)))
         throw new HTTPError(403, 'Unauthorized', 'Password not found');
       const payload: PayloadToken = {
+        id: data[0].id,
         email: req.body.email,
         role: 'admin',
       };

@@ -19,6 +19,10 @@ const thingSchema = new Schema<Thing>({
     min: 0,
     max: 10,
   },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+  },
 });
 
 thingSchema.set('toJSON', {
