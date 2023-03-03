@@ -16,6 +16,12 @@ const userSchema = new Schema<User>({
       ref: 'Thing',
     },
   ],
+  favorites: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Thing',
+    },
+  ],
 });
 
 userSchema.set('toJSON', {

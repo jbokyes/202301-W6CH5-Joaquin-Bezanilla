@@ -5,6 +5,7 @@ import { thingsRouter } from './router/things.router.js';
 import createDebug from 'debug';
 import { CustomError, HTTPError } from './errors/errors.js';
 import { usersRouter } from './router/users.router.js';
+import path from 'path';
 
 const debug = createDebug('W6:app');
 export const app = express();
@@ -16,7 +17,8 @@ const corsOptions = {
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cors(corsOptions));
-
+/* debug({ __dirname });
+app.use(express.static(path.resolve(__dirname, 'public')));*/
 // Modo más organizado de hacerlo
 // Ejemplo para una ruta
 

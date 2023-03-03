@@ -5,7 +5,7 @@ import { UsersMongoRepo } from './users.mongo.repo';
 jest.mock('./user.mongo.model');
 
 describe('Given UserMongoRepo', () => {
-  const repo = new UsersMongoRepo();
+  const repo = UsersMongoRepo.getInstance();
   describe('When is called', () => {
     test('Then should be instanced', () => {
       expect(repo).toBeInstanceOf(UsersMongoRepo);
@@ -85,7 +85,7 @@ describe('Given UserMongoRepo', () => {
     });
   });
 });
-const repo = new UsersMongoRepo();
+const repo = UsersMongoRepo.getInstance();
 describe('When you use delete()', () => {
   test('Then it should return the data', async () => {
     (UserModel.findByIdAndDelete as jest.Mock).mockResolvedValue(

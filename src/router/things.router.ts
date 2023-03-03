@@ -8,22 +8,22 @@ import { UsersMongoRepo } from '../repository/users.mongo.repo.js';
 // eslint-disable-next-line new-cap
 export const thingsRouter = Router();
 // Const repo = new ThingsFileRepo();
-const repo = new ThingsMongoRepo();
-const repoUsers = new UsersMongoRepo();
-const controller = new ThingsController(repo, repoUsers);
+const repoThings = ThingsMongoRepo.getInstance();
+const repoUsers = UsersMongoRepo.getInstance();
+const controller = new ThingsController(repoThings, repoUsers);
 
-thingsRouter.get('/', logged, controller.getAll.bind(controller));
-thingsRouter.get('/:id', logged, authorized, controller.get.bind(controller));
+thingsRouter.get('/', controller.getAll.bind(controller));
+thingsRouter.get('/:id', controller.get.bind(controller));
 thingsRouter.post('/', logged, controller.post.bind(controller));
 thingsRouter.patch(
   '/:id',
   logged,
-  authorized,
+  (req, resp, next) => authorized(req, resp, next, repoThings),
   controller.patch.bind(controller)
 );
 thingsRouter.delete(
   '/:id',
   logged,
-  authorized,
+  (req, resp, next) => authorized(req, resp, next, repoThings),
   controller.delete.bind(controller)
 );

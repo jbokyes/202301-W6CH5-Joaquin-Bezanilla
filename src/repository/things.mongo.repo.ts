@@ -6,7 +6,14 @@ import createDebug from 'debug';
 const debug = createDebug('W6:repo');
 
 export class ThingsMongoRepo implements Repo<Thing> {
-  constructor() {
+  private static instance: ThingsMongoRepo;
+  public static getInstance(): ThingsMongoRepo {
+    if (!ThingsMongoRepo.instance) {
+      ThingsMongoRepo.instance = new ThingsMongoRepo();
+    }
+    return ThingsMongoRepo.instance;
+  }
+  private constructor() {
     debug('Insantiate');
   }
   search(query: { key: string; value: unknown }): Promise<Thing[]> {
@@ -21,7 +28,9 @@ export class ThingsMongoRepo implements Repo<Thing> {
 
   async queryId(id: string): Promise<Thing> {
     debug('queryId: ' + id);
-    const data = await ThingModel.findById(id);
+    const data = await ThingModel.findById(id)
+      .populate('owner', { things: 0 })
+      .exec();
     if (!data)
       throw new HTTPError(404, 'Id not found', 'Id not found in queryId');
     return data;
@@ -29,7 +38,9 @@ export class ThingsMongoRepo implements Repo<Thing> {
 
   async create(info: Partial<Thing>): Promise<Thing> {
     debug('create: ' + info.id);
-    const data = await ThingModel.create(info);
+    const data = (await ThingModel.create(info)).populate('owner', {
+      things: 0,
+    });
     return data;
   }
 

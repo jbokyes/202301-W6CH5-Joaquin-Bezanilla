@@ -12,11 +12,24 @@ export class UsersController {
     debug('Instantiate');
   }
 
+  async getAll(_req: Request, resp: Response, next: NextFunction) {
+    try {
+      debug('getAll', this.repo);
+      const data = await this.repo.query();
+      resp.json({
+        results: data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async register(req: Request, resp: Response, next: NextFunction) {
     try {
       debug('register-post');
-      if (!req.body.email || !req.body.passwd)
+      if (!req.body.email || !req.body.passwd) {
         throw new HTTPError(403, 'Unauthorized', 'Invalid email or password');
+      }
       req.body.passwd = await Auth.hash(req.body.passwd);
       req.body.things = [];
       const data = await this.repo.create(req.body);

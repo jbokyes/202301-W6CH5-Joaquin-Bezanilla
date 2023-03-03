@@ -5,4 +5,5 @@ export type User = {
   email: string;
   passwd: string;
   things: Thing[];
+  favorites: Thing[];
 };

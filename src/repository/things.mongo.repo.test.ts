@@ -4,7 +4,7 @@ import { ThingModel } from './things.mongo.model';
 jest.mock('./things.mongo.model');
 
 describe('Given ThingsMongoRepo', () => {
-  const repo = new ThingsMongoRepo();
+  const repo = ThingsMongoRepo.getInstance();
   describe('When is called', () => {
     test('Then should be instanced', () => {
       expect(repo).toBeInstanceOf(ThingsMongoRepo);

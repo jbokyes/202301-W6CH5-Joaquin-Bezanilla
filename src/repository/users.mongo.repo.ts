@@ -6,13 +6,23 @@ import { UserModel } from './user.mongo.model.js';
 const debug = createDebug('W6:repo');
 
 export class UsersMongoRepo implements Repo<User> {
-  constructor() {
+  private static instance: UsersMongoRepo;
+
+  public static getInstance(): UsersMongoRepo {
+    if (!UsersMongoRepo.instance) {
+      UsersMongoRepo.instance = new UsersMongoRepo();
+    }
+    console.log(UsersMongoRepo.instance);
+    return UsersMongoRepo.instance;
+  }
+
+  private constructor() {
     debug('Insantiate');
   }
 
   async query(): Promise<User[]> {
     debug('query');
-    const data = await UserModel.find();
+    const data = await UserModel.find().populate('things', { owner: 0 });
     return data;
   }
 
